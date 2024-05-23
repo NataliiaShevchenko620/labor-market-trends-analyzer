@@ -30,52 +30,63 @@ CORS(app)
 #################################################
 # Flask Routes
 #################################################
+
 @app.route("/")
 def welcome():
     """List all available api routes."""
     return (
-           f"Available Routes:<br/>"
-           f"/api/v1.0/get_states<br/>"
-           f"/api/v1.0/get_industries<br/>"
-           f"/api/v1.0/get_employment_map/&lt;string:state_code&gt;/lt;int:industry_code&gt;&lt;int:reduction&gt; - return emp map<br/>"
-           f"/api/v1.0/get_employment_trend/&lt;string:mertic_code&gt;/lt;int:state_code&gt;&lt;int:industry_code&gt; - return emp trend<br/>"
-           f"/api/v1.0/get_unemployment_rate/&lt;string:mertic_code&gt;/lt;int:state_code&gt;&lt;int:industry_code&gt; - return unemp rate<br/>"
-           f"/api/v1.0/get_income_map/&lt;string:mertic_code&gt;/lt;int:state_code&gt;&lt;int:industry_code&gt; - return income map<br/>"
+        "Available Routes:<br/>"
+        '<a href="/api/v1.0/get_states">/api/v1.0/get_states</a><br/>'
+        '<a href="/api/v1.0/get_industries">/api/v1.0/get_industries</a><br/>'
+        '<a href="/api/v1.0/get_employment_map/US/1/10">'
+        '/api/v1.0/get_employment_map/&lt;string:state_code&gt;/&lt;int:industry_code&gt;/&lt;int:reduction&gt; - return emp map</a><br/>'
+        '<a href="/api/v1.0/get_employment_trend/US/1/10">'
+        '/api/v1.0/get_employment_trend/&lt;string:state_code&gt;/&lt;int:industry_code&gt;/&lt;int:reduction&gt; - return emp trend</a><br/>'
+        '<a href="/api/v1.0/get_unemployment_rate/US/1/10">'
+        '/api/v1.0/get_unemployment_rate/&lt;string:state_code&gt;/&lt;int:industry_code&gt;/&lt;int:reduction&gt; - return unemp rate</a><br/>'
+        '<a href="/api/v1.0/get_income_map/US/1/10">'
+        '/api/v1.0/get_income_map/&lt;string:state_code&gt;/&lt;int:industry_code&gt;/&lt;int:reduction&gt; - return income map</a><br/>'
     )
 
-@app.route("/api/v1.0/get_states") 
-def get_states(): 
+@app.route("/api/v1.0/get_states")
+def get_states():
     select_statement = f"""
     SELECT state_code,
            state_name
         FROM state
     """
-    # print(select_statement) 
+
+    # print(select_statement)
 
     with engine.connect() as connection:
-         
-        query = text(select_statement)
+
+        query = text(select_statement) 
         result = connection.execute(query)
-
+        
+        # Convert result to a list of dictionaries
         result_list = [dict(row) for row in result]
-    return jsonify(result_list)
 
-@app.route("/api/v1.0/get_industries") 
+    return result_list
+
+@app.route("/api/v1.0/get_industries")
 def get_industries():
     select_statement = f"""
     SELECT industry_code,
            industry_name
         FROM industry
     """
-    print(select_statement) 
+
+    # print(select_statement)
 
     with engine.connect() as connection:
-         
-        query = text(select_statement)
-        result = connection.execute(query)
 
+        query = text(select_statement) 
+        result = connection.execute(query)
+        
+        # Convert result to a list of dictionaries
         result_list = [dict(row) for row in result]
-    return jsonify(result_list)
+
+    return result_list
      
 
     
