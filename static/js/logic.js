@@ -488,7 +488,7 @@ function init() {
   let state_code = "US";
   let industry_code = "1011";
   let industry_name = "1011 - National resources and mining";
-  let reduction = 0;
+  let reduction = 5;
 
   // Call refresh_page function
   refreshPage(state_code, industry_code, industry_name, reduction);
