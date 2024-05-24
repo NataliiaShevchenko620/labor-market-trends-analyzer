@@ -9,14 +9,29 @@ let employmentMap = L.map("map-employment", {
   maxZoom: 8
 });
 
+let incomeMap = L.map("map-income", {
+  center: [38.5, -96],
+  zoom: 4,
+  maxZoom: 8
+});
+
 // Adding the tile layer
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap contributors, © CARTO'
 }).addTo(employmentMap);
 
+// Adding the tile layer
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors, © CARTO'
+}).addTo(incomeMap);
+
 // Initialize variables to make them global
 let employmentChoroplethLayer;
 let employmentLegend;
+
+// Initialize variables to make them global
+let incomeChoroplethLayer;
+let incomeLegend;
 
 /***********
   FUNCTIONS
@@ -111,8 +126,92 @@ function refreshEmploymentMap(state_code, industry_code, reduction) {
 }
 
 // Refresh Income map
-//function refreshIncomeMap(state_code, industry_code, reduction) {
-//}
+function refreshIncomeMap(state_code, industry_code, reduction) {
+  // Define URL for API
+  let geoData = `http://127.0.0.1:5000/api/v1.0/get_income_map/${state_code}/${industry_code}/${reduction}`;
+
+  // Get the data with d3.
+  d3.json(geoData).then(function (data) {
+    // Define new variable respose to keep value of data
+    let response = data;
+
+    console.log(response);
+
+    // Create a new choropleth layer.
+    incomeChoroplethLayer = L.choropleth(response, {
+      // Define which property in the features to use.
+      valueProperty: "change_in_per_capita_income",
+
+      // Set the color scale.
+      scale: ["#ece7f2", "#2b8cbe"],
+
+      // The number of breaks in the step range
+      steps: 5,
+
+      // q for quartile, e for equidistant, k for k-means
+      mode: "q",
+
+      // Define style
+      style: {
+        color: '#fff',
+        weight: 2,
+        fillOpacity: 0.9
+      },
+
+      // Binding a popup to each layer
+      onEachFeature: function(feature, layer) {
+
+        let bindPopupHTML;
+
+        if (state_code === "US") {
+          bindPopupHTML = `<b>State: </b>${feature.properties.NAME}
+          <hr><p>Reduced industry share by employment: ${feature.properties.reduced_industry_share.toLocaleString()}%</p>
+          <p>Current industry share by employment: ${feature.properties.current_industry_share.toLocaleString()}%</p>`
+        } else {
+          bindPopupHTML = `<b>State: </b>${feature.properties.STATE_NAME}<br>
+          <b>County: </b>${feature.properties.NAME}
+          <hr><p>Reduced industry share by employment: ${feature.properties.reduced_industry_share.toLocaleString()}%</p>
+          <p>Current industry share by employment: ${feature.properties.current_industry_share.toLocaleString()}%</p>`
+        }
+
+        layer.bindPopup(bindPopupHTML);
+      }
+
+    }).addTo(incomeMap);
+
+    // Focus map on a selected state or a whole mainland US
+    if (state_code === "US") {
+      incomeMap.setView([38.5, -96], 4);
+    } else {
+      incomeMap.fitBounds(incomeChoroplethLayer.getBounds());
+    }
+    
+    // Set up the legend
+    incomeLegend = L.control({ position: 'bottomright' })
+
+    // Define a function that creates a legend
+    incomeLegend.onAdd = function (map) {
+      let div = L.DomUtil.create('div', 'info legend');
+      let limits = incomeChoroplethLayer.options.limits;
+      let colors = incomeChoroplethLayer.options.colors; 
+
+      div.style.backgroundColor = 'white';    // Set the background color to white
+      div.style.padding = '6px';              // Add some padding for aesthetics
+      div.style.border = '1px solid #ccc';    // Add a light grey border
+      div.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)'; // Add a subtle shadow
+
+      // Loop through all limits to create a set of color strips related to ranges
+      limits.forEach(function (limit, index) {
+        div.innerHTML += '<b style="background-color: ' + colors[index] + '; display: inline-block;">' + limits[index].toLocaleString() + '</b><br>';
+      })
+
+      return div
+    }
+
+    // Add the legend to the map
+    incomeLegend.addTo(incomeMap);
+  });
+}
 
 // Refresh bar chart
 function refreshBarChart(state_code, industry_code, reduction) {
@@ -307,7 +406,7 @@ function refreshPage(state_code, industry_code, industry_name, reduction) {
   barChartTitle.html(barChartTitleHTML);
 
   refreshEmploymentMap(state_code, industry_code, reduction);
-  //refreshIncomeMap(state_code, industry_code, reduction);
+  refreshIncomeMap(state_code, industry_code, reduction);
   refreshLineChart(state_code, industry_code, reduction);
   refreshBarChart(state_code, industry_code, reduction);
 }
