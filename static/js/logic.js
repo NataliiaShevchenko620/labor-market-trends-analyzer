@@ -49,6 +49,17 @@ function refreshEmploymentMap(state_code, industry_code, reduction) {
 
     console.log(response);
 
+    // Remove existing choropleth layer and legend if they exist
+    if (employmentChoroplethLayer) {
+      employmentChoroplethLayer.remove();
+      employmentChoroplethLayer = null;
+    }
+  
+    if (employmentLegend) {
+      employmentMap.removeControl(employmentLegend);
+      employmentLegend = null;
+    }
+
     // Create a new choropleth layer.
     employmentChoroplethLayer = L.choropleth(response, {
       // Define which property in the features to use.
@@ -137,6 +148,17 @@ function refreshIncomeMap(state_code, industry_code, reduction) {
 
     console.log(response);
 
+    // Remove existing choropleth layer and legend if they exist
+    if (incomeChoroplethLayer) {
+      incomeChoroplethLayer.remove();
+      incomeChoroplethLayer = null;
+    }
+  
+    if (incomeLegend) {
+      incomeMap.removeControl(incomeLegend);
+      incomeLegend = null;
+    }
+
     // Create a new choropleth layer.
     incomeChoroplethLayer = L.choropleth(response, {
       // Define which property in the features to use.
@@ -206,7 +228,7 @@ function refreshIncomeMap(state_code, industry_code, reduction) {
 
       // Loop through all limits to create a set of color strips related to ranges
       limits.forEach(function (limit, index) {
-        div.innerHTML += '<b style="background-color: ' + colors[index] + '; display: inline-block;">' + limits[index].toLocaleString() + '</b><br>';
+        div.innerHTML += '<b style="background-color: ' + colors[index] + '; display: inline-block;">' + limits[index].toLocaleString() + '%</b><br>';
       })
 
       return div
