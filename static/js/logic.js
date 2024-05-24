@@ -143,7 +143,7 @@ function refreshIncomeMap(state_code, industry_code, reduction) {
       valueProperty: "change_in_per_capita_income",
 
       // Set the color scale.
-      scale: ["#ece7f2", "#2b8cbe"],
+      scale: ["#b30000", "#fef0d9"],
 
       // The number of breaks in the step range
       steps: 5,
@@ -165,13 +165,17 @@ function refreshIncomeMap(state_code, industry_code, reduction) {
 
         if (state_code === "US") {
           bindPopupHTML = `<b>State: </b>${feature.properties.NAME}
-          <hr><p>Reduced industry share by employment: ${feature.properties.reduced_industry_share.toLocaleString()}%</p>
-          <p>Current industry share by employment: ${feature.properties.current_industry_share.toLocaleString()}%</p>`
+          <hr><p>Reduced per capita income: ${parseInt(feature.properties.per_capita_reduced_income).toLocaleString()}</p>
+          <p>Current per capita income: ${parseInt(feature.properties.per_capita_income).toLocaleString()}</p>
+          <p>Current industry wage: ${parseInt(feature.properties.per_capita_industry_wage).toLocaleString()}</p>
+          <p>Change in per capita income: ${feature.properties.change_in_per_capita_income.toLocaleString()}%</p>`
         } else {
           bindPopupHTML = `<b>State: </b>${feature.properties.STATE_NAME}<br>
           <b>County: </b>${feature.properties.NAME}
-          <hr><p>Reduced industry share by employment: ${feature.properties.reduced_industry_share.toLocaleString()}%</p>
-          <p>Current industry share by employment: ${feature.properties.current_industry_share.toLocaleString()}%</p>`
+          <hr><p>Reduced per capita income: ${parseInt(feature.properties.per_capita_reduced_income).toLocaleString()}</p>
+          <p>Current per capita income: ${parseInt(feature.properties.per_capita_income).toLocaleString()}</p>
+          <p>Current industry wage: ${parseInt(feature.properties.per_capita_industry_wage).toLocaleString()}</p>
+          <p>Change in per capita income: ${feature.properties.change_in_per_capita_income.toLocaleString()}%</p>`
         }
 
         layer.bindPopup(bindPopupHTML);
