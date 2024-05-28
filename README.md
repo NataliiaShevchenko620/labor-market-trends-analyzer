@@ -30,7 +30,7 @@ Data is presented for 2020-2022, not all federal agencies can provide required d
 
 + Below is an example of the Web Application
 
-![Alt text](Image/Sample%20Output.png)
+![Alt text](Images/Sample%20Output.png)
 
 ## Ethical Considerations made in the Project
 
