@@ -14,6 +14,8 @@
 
 + This web application aims to provide a comprehensive analysis of the potential impact of AI on employment across different industries and regions, helping stakeholders to better understand and prepare for the future job market.
 
+[See more details about the project in the presentation](https://docs.google.com/presentation/d/1PB3I37HJ30viPCbzTPQ8OWInUR1JcpulpccwwwgVWkQ/edit#slide=id.p)
+
 
 ## Instructions to Utilize and Interact with the Project
 
